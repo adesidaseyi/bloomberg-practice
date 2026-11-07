@@ -11,7 +11,7 @@ public class Subscriptions {
     public Subscription activate(String id){
         Subscription s=get(id); s.status=SubStatus.ACTIVE; s.hasExpiry=false; return s;
     }
-    public Subscription suspend(String id){ Subscription s=get(id); if(s.status!=SubStatus.ACTIVE) throw new IllegalArgumentException("only active"); s.status=SubStatus.SUSPENDED; return s; }
+    public Subscription suspend(String id){ Subscription s=get(id); if(s.status!=SubStatus.ACTIVE && s.status!=SubStatus.TRIAL) throw new IllegalArgumentException("only active"); s.status=SubStatus.SUSPENDED; return s; }
     public Subscription resume(String id){ Subscription s=get(id); if(s.status!=SubStatus.SUSPENDED) throw new IllegalArgumentException("only suspended"); s.status=SubStatus.ACTIVE; return s; }
     public Subscription cancel(String id){
         Subscription s=get(id);
@@ -20,6 +20,7 @@ public class Subscriptions {
     public boolean isEntitled(String id){
         Subscription s=get(id);
         if(s.status==SubStatus.ACTIVE) return true;
+        if(s.status==SubStatus.SUSPENDED) return true;
         if(s.status==SubStatus.TRIAL) return true;
         return false;
     }

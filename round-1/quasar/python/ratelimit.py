@@ -27,15 +27,15 @@ class RateLimiter:
         if st is None:
             st = _Window(now, 0)
             self._state[key] = st
-        if st.count < self._limit:
-            st.count += 1
+        st.count += 1
+        if st.count <= self._limit:
             return True
         return False
 
     def remaining(self, key: str) -> int:
         st = self._state.get(key)
         if st is None:
-            return self._limit
+            return 0
         return self._limit - st.count
 
     def reset(self, key: str) -> None:

@@ -1,30 +1,54 @@
 # quasar - Rate Limiter
 
-`RateLimiter` is a fixed-window per-key rate limiter.
+`RateLimiter` enforces a per-key request quota using fixed windows. The service
+is in-memory, single-process, and takes an injected clock so window behaviour is
+deterministic in tests.
 
-You are joining this codebase late, and something in it is wrong. Users report keys that stay blocked forever after their first burst, remaining counts that never recover, and a reset that does nothing. Your job is
-to find the bug or bugs behind that, fix them, and prove each fix with a test you
-write yourself. This pack ships no tests.
+## Domain model
 
-## Scope
+For each key the limiter stores:
 
-In scope:
+- the start of the current window
+- the number of requests allowed in that window
 
-- find and fix the defects behind the reported symptom;
-- write your own tests to confirm each defect and each fix;
-- keep all existing, correct behaviour working.
+Windows are independent per key.
 
-Out of scope:
+## Public API
 
-- redesigning the component or changing its public API;
-- adding features the brief did not ask for;
-- performance work, unless a defect is itself a performance bug.
+### `allow(key) -> bool`
+
+Consumes one unit of quota and returns `True` when the request is allowed.
+Returns `False` when the window's quota is exhausted.
+
+### `remaining(key) -> int`
+
+Reports how much quota is left in the key's current window.
+
+### `reset(key) -> None`
+
+Discards the key's current window.
+
+## Repository map
+
+```text
+python/ratelimit.py   RateLimiter
+cpp/ratelimit.hpp     header-only equivalent
+java/RateLimit.java   equivalent
+python/conftest.py    import path for your Python tests
+```
+
+The same behaviour is implemented in all three languages. Pick one.
+
+## Scope and time
+
+In scope: find where the implementation deviates from this specification, write
+a test that proves each deviation, fix the narrowest layer, and keep existing
+correct behaviour working.
+
+Out of scope: redesigning the component, changing the public API, or adding
+features the specification does not describe.
 
 Time budget: about 35 minutes.
 
-## Start here
-
-1. `CANDIDATE_BRIEF.md`: the system, the lifecycle, and what to be ready to explain.
-2. `PROJECT_MANAGER_NOTES.md`: questions to ask before you change behaviour.
-3. `SETUP.md`: how to run the tests you write, in Python, C++, or Java.
-4. `SELF_REVIEW_AFTER.md`: read only after you finish.
+This pack ships no tests. Read the spec, ask the interviewer about the edge
+cases, then write your own tests.

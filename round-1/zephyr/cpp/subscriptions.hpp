@@ -20,7 +20,7 @@ public:
     }
     Subscription& suspend(const std::string& id){
         Subscription& s=get(id);
-        if(s.status!=SubStatus::ACTIVE) throw std::invalid_argument("only active can be suspended");
+        if(s.status!=SubStatus::ACTIVE && s.status!=SubStatus::TRIAL) throw std::invalid_argument("only active can be suspended");
         s.status=SubStatus::SUSPENDED; return s;
     }
     Subscription& resume(const std::string& id){
@@ -35,6 +35,7 @@ public:
     bool is_entitled(const std::string& id){
         Subscription& s=get(id);
         if(s.status==SubStatus::ACTIVE) return true;
+        if(s.status==SubStatus::SUSPENDED) return true;
         if(s.status==SubStatus::TRIAL) return true;
         return false;
     }

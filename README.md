@@ -5,14 +5,15 @@ Interview-grade practice for Bloomberg's AI-assisted codebase rounds. Each pack 
 real, deliberately planted bugs and **no tests**.
 
 That last part is the point. The real skill is not running a green suite someone handed
-you. It is reading code you did not write, taking a vague bug report, forming a
+you. It is reading code you did not write, taking a spec or a vague bug report, forming a
 hypothesis, **writing your own test to confirm it**, fixing the code, and keeping your
-test green. So these packs ship the service and the reported symptom, and you bring the
+test green. So these packs ship the service and the requirements, and you bring the
 tests.
 
 - `round-1/` — a focused service: one stateful domain object with a clear lifecycle and a
-  few planted bugs. Target ~35 minutes. A `CANDIDATE_BRIEF.md` tells you the system and
-  the reported symptom; `PROJECT_MANAGER_NOTES.md` has the questions to ask.
+  few planted bugs. Target ~35 minutes. Where a pack has a full product spec, it is in
+  `README.md`; a `CANDIDATE_BRIEF.md` frames the joining-late task, and
+  `PROJECT_MANAGER_NOTES.md` has the questions to ask.
 - `round-2/` — a larger multi-module microservice with more surface area and a `tickets/`
   backlog of reported problems. Target ~45 minutes.
 
@@ -26,11 +27,12 @@ language you want to interview in.
 
 ```text
 round-1/halcyon/                         round-2/harbor/
-  README.md         scope                  README.md         scope + rules
+  README.md         spec + scope           README.md         scope + rules
   CANDIDATE_BRIEF.md                        SETUP.md
   PROJECT_MANAGER_NOTES.md                  tickets/
   SELF_REVIEW_AFTER.md                      python/  cpp/  java/
   SETUP.md
+  INTERVIEWER_GUIDE.md  (optional, interviewer-only)
   python/  cpp/  java/
 ```
 
@@ -40,8 +42,8 @@ write a small `Check.java` with a `main`. See each pack's `SETUP.md`.
 
 ## Round 1 — one service, a few bugs (~35 min, Python / C++ / Java)
 
-One stateful domain object with a lifecycle and invariants to protect. The brief gives you
-the reported symptom; you find and confirm the bugs.
+One stateful domain object with a lifecycle and invariants to protect. The spec gives you
+the requirements; you find and confirm the deviations.
 
 | Pack | Domain | What it is |
 | --- | --- | --- |
@@ -76,14 +78,15 @@ More modules, more surface area, a ticket backlog. Work ticket by ticket.
 ## How to practice
 
 1. Pick a pack and a language, and start a timer (35 min for round 1, 45 min for round 2).
-2. Read the pack (round 1: `CANDIDATE_BRIEF.md`; round 2: `README.md` and `tickets/`). Note
-   the reported symptom, not a bug location.
+2. Read the pack (round 1: `README.md` and `CANDIDATE_BRIEF.md`; round 2: `README.md` and
+   `tickets/`). Work from the requirements, not a bug location, and ask the interviewer
+   about the edge cases the spec leaves open.
 3. Map the code. Form a hypothesis about what is actually wrong.
 4. **Write a test that reproduces it** and watch it fail. That failing test is your proof
    the bug is real, and the thing you will turn green. See `SETUP.md` for how to run tests
    in each language.
 5. Fix the narrowest layer. Keep every test you wrote green. Do not change behaviour the
-   brief did not ask you to.
+   spec did not ask you to.
 6. Narrate the whole time: the invariant each bug breaks, the state transitions, time and
    space complexity, whether the operation should be idempotent, and what changes in a
    concurrent or distributed version. Round 1 has a `SELF_REVIEW_AFTER.md` to check against
@@ -91,6 +94,12 @@ More modules, more surface area, a ticket backlog. Work ticket by ticket.
 
 Treat any AI assistant the way the round expects: use it to understand the code and sanity
 -check your tests, write and own the fix yourself.
+
+## Running a mock interview
+
+`zephyr` and `quasar` include an `INTERVIEWER_GUIDE.md` with the answer key, suggested
+flow, recommended answers to the clarifying questions, and a hint ladder. It is
+interviewer-only: do not give it to the candidate or leave it open on a shared screen.
 
 ## Practising with a local AI assistant
 

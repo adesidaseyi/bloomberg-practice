@@ -13,12 +13,13 @@ public:
         auto it=state_.find(key);
         if(it==state_.end()){ state_[key]=Window{now,0}; it=state_.find(key); }
         Window& w=it->second;
-        if(w.count<limit_){ w.count++; return true; }
+        w.count++;
+        if(w.count<=limit_) return true;
         return false;
     }
     int remaining(const std::string& key){
         auto it=state_.find(key);
-        if(it==state_.end()) return limit_;
+        if(it==state_.end()) return 0;
         return limit_ - it->second.count;
     }
     void reset(const std::string& key){

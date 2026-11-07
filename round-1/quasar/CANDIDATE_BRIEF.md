@@ -2,30 +2,26 @@
 
 You are joining an existing project late in development.
 
-`RateLimiter` is a fixed-window per-key rate limiter. Each key may be allowed up to `limit` times per window, and the count resets when the window elapses. Users report keys that stay blocked forever after their first burst, remaining counts that never recover, and a reset that does nothing.
+Start with `README.md`. It is the product specification for `RateLimiter`: the
+window model, the public API, and the rules the limiter is supposed to protect.
 
-The intended high-level lifecycle is:
+The implementation is in place but has not been validated against that spec.
+Your job is to:
 
-```
-window open -> count rises to limit -> blocked
-   \--window elapses--> fresh window, count 0
-```
+- clarify the edge cases with the interviewer before changing behaviour;
+- read the implementation and form a hypothesis about where it deviates;
+- write a test that proves each deviation;
+- fix the narrowest layer, keeping every test you write green.
 
-Some requirements are intentionally incomplete. Treat the interviewer as the
-project manager: ask clarifying questions where behaviour is ambiguous (there is
-a list to start from in `PROJECT_MANAGER_NOTES.md`).
-
-You may inspect the source, modify the implementation, and add your own tests. The
-same system exists in Python, C++, and Java; pick one (see `SETUP.md`).
-
-This pack ships no tests. Reproduce the reported symptom with a test you write,
-confirm your hypothesis, then fix the code and keep your own tests green.
+This pack ships no tests. Use `SETUP.md` to run the tests you write in Python,
+C++, or Java.
 
 ## Where the code lives
 
 The same system is implemented three times, once per language:
 
-`python/ratelimit.py` (RateLimiter), `cpp/ratelimit.hpp`, and `java/RateLimit.java`.
+`python/ratelimit.py` (`RateLimiter`), `cpp/ratelimit.hpp`, and
+`java/RateLimit.java`.
 
 ## Be ready to explain
 

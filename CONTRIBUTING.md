@@ -21,11 +21,15 @@ skill being practised. What a pack ships instead:
 
 - the implementation, with the bugs in it, one folder per language;
 - a `conftest.py` in each `python/` so a candidate's own `test_*.py` imports the module;
-- the story: round 1 ships `CANDIDATE_BRIEF.md` with the reported symptom, round 2 ships
-  `tickets/` with one reported problem each.
+- the story: round 1 ships `README.md` with the product spec and
+  `CANDIDATE_BRIEF.md` with the joining-late framing; round 2 ships `tickets/`
+  with one reported problem each.
 
-There is **no solution file** and **no test file** in the repository. You verify the pack
-with a private holdout suite (next section) that you keep out of the repo.
+Candidate-facing packs contain **no solution file** and **no test file**. An
+optional `INTERVIEWER_GUIDE.md` may be added as an interviewer-only answer key;
+it must be clearly marked and kept out of the candidate's view. You still verify
+the pack with a private holdout suite (next section) that you keep out of the
+candidate-facing material.
 
 ## Languages and layout
 
@@ -33,10 +37,12 @@ A pack is implemented three times with the **same bugs**, one folder per languag
 
 ```text
 round-1/<codename>/                       round-2/<codename>/
-  CANDIDATE_BRIEF.md                         README.md
-  PROJECT_MANAGER_NOTES.md                   SETUP.md
-  SELF_REVIEW_AFTER.md                       tickets/
-  SETUP.md                                   python/  cpp/  java/
+  README.md                                 README.md
+  CANDIDATE_BRIEF.md                        SETUP.md
+  PROJECT_MANAGER_NOTES.md                  tickets/
+  SELF_REVIEW_AFTER.md                      python/  cpp/  java/
+  SETUP.md
+  INTERVIEWER_GUIDE.md  (optional, interviewer-only)
   python/  cpp/  java/
 ```
 
@@ -70,15 +76,21 @@ outside the repo. It is your answer key, not part of the pack.
 
 ## Round 1 document set
 
-- `CANDIDATE_BRIEF.md` — "You are joining an existing project late in development", the system,
-  the intended lifecycle, the **reported symptom** (not a bug location), where the code lives,
-  and a be-ready-to-explain list (invariants, state transitions, idempotency, complexity, the
-  concurrent/distributed version).
+- `README.md` — the product specification: the system, the domain model, the lifecycle,
+  the public API, the agreed rules, the points to confirm with the interviewer, the
+  repository map, and the scope/time budget. It does not enumerate symptoms or bug
+  locations.
+- `CANDIDATE_BRIEF.md` — "You are joining an existing project late in development", the
+  task framing (clarify, reproduce, fix), where the code lives, and a be-ready-to-explain
+  list (invariants, state transitions, idempotency, complexity, the concurrent/distributed
+  version).
 - `PROJECT_MANAGER_NOTES.md` — the clarifying questions a strong candidate asks. The
   interviewer plays the project manager, so some answers are judgement calls.
-- `SELF_REVIEW_AFTER.md` — what strong candidates notice, read after the exercise. Symptoms,
-  not a patch.
+- `SELF_REVIEW_AFTER.md` — what strong candidates notice, read after the exercise.
+  Observations, not a patch.
 - `SETUP.md` — how to run the tests the candidate writes, in each language.
+- `INTERVIEWER_GUIDE.md` — optional, interviewer-only answer key: recommended answers,
+  bug inventory, intended fixes, test recipes, hint ladder, and rubric.
 
 ## Round 2 document set
 

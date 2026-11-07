@@ -1,14 +1,19 @@
 # Project Manager Notes - Subscription Entitlement
 
-Do not read this until after your first pass.
+Read this after your first pass. It is a checklist of the questions a strong
+candidate asks before and during the fix. The interviewer is playing the
+project manager, so some answers are judgement calls, not facts in the code.
 
-These are the questions a strong candidate asks before and during the fix. The
-interviewer is playing the project manager, so some answers are judgement calls,
-not facts in the code.
-
-- Can a cancelled subscription be reactivated?
-- Can an expired trial be activated without the user paying?
-- Should an expired trial still read as entitled?
-- What should a second cancel do?
-- Is EXPIRED a distinct state from CANCELLED?
-- Should a read like is_entitled force expiry cleanup?
+- What are the valid source states for `activate`? Can a suspended subscription
+  be activated directly, or must it be resumed?
+- Can `activate` revive a cancelled or expired subscription?
+- What should a second `cancel` do?
+- Is `EXPIRED` a distinct state from `CANCELLED`?
+- When exactly does a trial expire: at `now == expires_at`, or after it?
+- Is expiry computed on read, or swept eagerly? Does a read change the stored
+  status?
+- Is a suspended subscription entitled?
+- Can a `TRIAL` be suspended?
+- Should a user be able to hold more than one live subscription?
+- Is `is_entitled` safe if two threads read and expire the same subscription
+  at once?

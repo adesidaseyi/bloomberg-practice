@@ -47,7 +47,7 @@ class SubscriptionService:
 
     def suspend(self, sub_id: str) -> Subscription:
         sub = self._get(sub_id)
-        if sub.status != SubStatus.ACTIVE:
+        if sub.status not in (SubStatus.TRIAL, SubStatus.ACTIVE):
             raise ValueError("only active subscriptions can be suspended")
         sub.status = SubStatus.SUSPENDED
         return sub
@@ -68,6 +68,8 @@ class SubscriptionService:
     def is_entitled(self, sub_id: str) -> bool:
         sub = self._get(sub_id)
         if sub.status == SubStatus.ACTIVE:
+            return True
+        if sub.status == SubStatus.SUSPENDED:
             return True
         if sub.status == SubStatus.TRIAL:
             return True

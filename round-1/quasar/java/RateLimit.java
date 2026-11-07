@@ -8,12 +8,13 @@ public class RateLimit {
     public boolean allow(String key){
         double now=clock.getAsDouble(); Window w=state.get(key);
         if(w==null){ w=new Window(now,0); state.put(key,w); }
-        if(w.count<limit){ w.count++; return true; }
+        w.count++;
+        if(w.count<=limit) return true;
         return false;
     }
     public int remaining(String key){
         Window w=state.get(key);
-        if(w==null) return limit;
+        if(w==null) return 0;
         return limit - w.count;
     }
     public void reset(String key){
