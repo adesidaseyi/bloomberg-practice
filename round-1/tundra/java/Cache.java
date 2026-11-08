@@ -6,7 +6,7 @@ public class Cache {
     private final LinkedHashMap<String,Entry> data = new LinkedHashMap<>();   // insertion order = recency
     public Cache(int cap, double ttl, DoubleSupplier clock){ this.cap=cap; this.ttl=ttl; this.clock=clock; }
     public void put(String key, int value){
-        if(data.containsKey(key)) data.remove(key);
+        if(data.containsKey(key)){ Entry old=data.remove(key); data.put(key, old); return; }
         data.put(key, new Entry(value, clock.getAsDouble()+ttl));
         while(data.size() > cap){
             String eldest = data.keySet().iterator().next();

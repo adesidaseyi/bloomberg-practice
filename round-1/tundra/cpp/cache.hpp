@@ -13,7 +13,10 @@ public:
     LRUCache(int cap, double ttl, std::function<double()> clock): cap_(cap), ttl_(ttl), clock_(clock) {}
     void put(const std::string& key, int value){
         auto it = idx_.find(key);
-        if(it != idx_.end()){ order_.erase(it->second); idx_.erase(it); }
+        if(it != idx_.end()){
+            order_.splice(order_.end(), order_, it->second);
+            return;
+        }
         order_.push_back({key, Entry{value, clock_() + ttl_}});
         idx_[key] = std::prev(order_.end());
         while((int)order_.size() > cap_){

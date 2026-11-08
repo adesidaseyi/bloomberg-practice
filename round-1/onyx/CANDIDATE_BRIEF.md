@@ -2,31 +2,23 @@
 
 You are joining an existing project late in development.
 
-`TokenStore` issues short-lived access tokens. A token is valid while it is ACTIVE and unexpired. It can be refreshed to extend its life, or revoked. Users report expired tokens that still pass validation, expired tokens that can be refreshed back to life, and revokes that run twice.
+Start with `README.md`. It is the product specification for `TokenStore`: the
+states, the public API, and the rules the service is supposed to protect.
 
-The intended high-level lifecycle is:
+The implementation is in place but has not been validated against that spec.
+Your job is to:
 
-```
-ACTIVE --refresh--> ACTIVE (new expiry)
-   |--revoke--> REVOKED
-   \--TTL--> expired (still ACTIVE status, but invalid)
-```
+- clarify the edge cases with the interviewer before changing behaviour;
+- read the implementation and form a hypothesis about where it deviates;
+- write a test that proves each deviation;
+- fix the narrowest layer, keeping every test you write green.
 
-Some requirements are intentionally incomplete. Treat the interviewer as the
-project manager: ask clarifying questions where behaviour is ambiguous (there is
-a list to start from in `PROJECT_MANAGER_NOTES.md`).
-
-You may inspect the source, modify the implementation, and add your own tests. The
-same system exists in Python, C++, and Java; pick one (see `SETUP.md`).
-
-This pack ships no tests. Reproduce the reported symptom with a test you write,
-confirm your hypothesis, then fix the code and keep your own tests green.
+This pack ships no tests. Use `SETUP.md` to run the tests you write in Python,
+C++, or Java.
 
 ## Where the code lives
 
-The same system is implemented three times, once per language:
-
-`python/tokens.py` (TokenStore, Token), `cpp/tokens.hpp`, and `java/Tokens.java`.
+`python/tokens.py` (`TokenStore`, `Token`), `cpp/tokens.hpp`, and `java/Tokens.java`.
 
 ## Be ready to explain
 

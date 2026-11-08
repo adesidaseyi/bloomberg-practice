@@ -1,30 +1,45 @@
 # pike - Document Approval Workflow
 
-`ApprovalService` is a document approval workflow.
+`ApprovalService` is a document approval workflow. A submitted document is `PENDING`, and from there it can be approved, rejected, or withdrawn by its author. Those decisions are terminal. The service is in-memory and single-process.
 
-You are joining this codebase late, and something in it is wrong. Users report documents that get approved after being rejected, documents withdrawn after a decision, and a pending count that never goes down. Your job is
-to find the bug or bugs behind that, fix them, and prove each fix with a test you
-write yourself. This pack ships no tests.
+## Domain model
 
-## Scope
+- `Document` has `doc_id`, `title`, and `status`.
+- Status: `PENDING`, `APPROVED`, `REJECTED`, `WITHDRAWN`.
+- `PENDING` is the only non-terminal state.
 
-In scope:
+## Lifecycle
 
-- find and fix the defects behind the reported symptom;
-- write your own tests to confirm each defect and each fix;
-- keep all existing, correct behaviour working.
+| From | Event | To |
+| --- | --- | --- |
+| `PENDING` | approve | `APPROVED` |
+| `PENDING` | reject | `REJECTED` |
+| `PENDING` | withdraw | `WITHDRAWN` |
 
-Out of scope:
+Nothing leaves `APPROVED`, `REJECTED`, or `WITHDRAWN`.
 
-- redesigning the component or changing its public API;
-- adding features the brief did not ask for;
-- performance work, unless a defect is itself a performance bug.
+## Public API
 
-Time budget: about 35 minutes.
+### `submit(title) -> Document`
 
-## Start here
+Creates a `PENDING` document.
 
-1. `CANDIDATE_BRIEF.md`: the system, the lifecycle, and what to be ready to explain.
-2. `PROJECT_MANAGER_NOTES.md`: questions to ask before you change behaviour.
-3. `SETUP.md`: how to run the tests you write, in Python, C++, or Java.
-4. `SELF_REVIEW_AFTER.md`: read only after you finish.
+### `approve(doc_id) -> Document`
+
+Approves a pending document.
+
+### `reject(doc_id) -> Document`
+
+Rejects a pending document.
+
+### `withdraw(doc_id) -> Document`
+
+Withdraws a pending document.
+
+### `status(doc_id) -> DocStatus`
+
+Returns the document's current status.
+
+### `pending_count() -> int`
+
+Counts documents that are currently `PENDING`.

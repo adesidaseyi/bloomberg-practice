@@ -1,9 +1,10 @@
 # Setup
 
-This pack ships no tests, on purpose. Read the reported symptom, form a hypothesis
-about what is wrong, and write your own tests to confirm it before you change
-anything. The same service exists in Python, C++, and Java; pick one. No external
-dependencies, services, API keys, or network.
+This pack ships no tests, on purpose. Read the specification in `README.md`,
+form a hypothesis about where the implementation deviates, and write your own
+tests to confirm it before you change anything. The same service exists in
+Python, C++, and Java; pick one. No external dependencies, services, API keys,
+or network.
 
 ## Python 3.9+
 

@@ -1,30 +1,34 @@
 # vesper - Connection Pool
 
-`ConnectionPool` is a fixed-capacity connection pool.
+`ConnectionPool` is a fixed-capacity connection pool. `acquire()` hands out an idle connection or opens a new one up to the capacity; `release()` returns one to the idle set. A closed pool accepts no new work. The service is in-memory and single-process.
 
-You are joining this codebase late, and something in it is wrong. Users report pools that grow past their capacity, connections released twice, and a closed pool that still hands out connections. Your job is
-to find the bug or bugs behind that, fix them, and prove each fix with a test you
-write yourself. This pack ships no tests.
+## Domain model
 
-## Scope
+- `Connection` has `conn_id` and `status`.
+- Status: `IN_USE`, `IDLE`.
+- The pool has a fixed capacity and a closed flag.
 
-In scope:
+## Lifecycle
 
-- find and fix the defects behind the reported symptom;
-- write your own tests to confirm each defect and each fix;
-- keep all existing, correct behaviour working.
+```text
+(new) -> IN_USE <-> IDLE
+close() -> the pool refuses further acquire/release
+```
 
-Out of scope:
+## Public API
 
-- redesigning the component or changing its public API;
-- adding features the brief did not ask for;
-- performance work, unless a defect is itself a performance bug.
+### `acquire() -> Connection`
 
-Time budget: about 35 minutes.
+Returns an idle connection or creates a new one while under capacity.
 
-## Start here
+### `release(conn_id) -> Connection`
 
-1. `CANDIDATE_BRIEF.md`: the system, the lifecycle, and what to be ready to explain.
-2. `PROJECT_MANAGER_NOTES.md`: questions to ask before you change behaviour.
-3. `SETUP.md`: how to run the tests you write, in Python, C++, or Java.
-4. `SELF_REVIEW_AFTER.md`: read only after you finish.
+Returns an in-use connection to the idle set.
+
+### `close() -> None`
+
+Closes the pool and rejects further acquire/release.
+
+### `in_use_count() / idle_count() / size()`
+
+Report the pool's current counts.

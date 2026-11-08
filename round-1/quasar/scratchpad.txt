@@ -1,0 +1,26 @@
+requirements on intended behaviour:
+- end time = start time + fixed window size
+- only allow function takes up quota
+- reset function takes the request quota back up - start a new window with fresh quota
+- allow function starts a new window for a fresh key
+- remaining returns default quota for a fresh key; fesh quota for a key with expired window
+- each key has their own start time
+
+
+others:
+- clock can be mocked
+
+Rate Limiter object:
+- should have a default max quota init value
+- should be init with the default size of a fixed window
+- should keep track of the keys and their requests, start times
+
+
+stale window for an existing key, and quota exceeded; allow(key) -> return true
+
+
+
+
+
+
+

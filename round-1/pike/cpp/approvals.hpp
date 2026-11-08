@@ -14,7 +14,6 @@ public:
     }
     Document& reject(const std::string& id){
         Document& d=get(id);
-        if(d.status!=DocStatus::PENDING) throw std::invalid_argument("only pending can be rejected");
         d.status=DocStatus::REJECTED; return d;
     }
     Document& withdraw(const std::string& id){

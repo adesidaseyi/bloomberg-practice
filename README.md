@@ -11,9 +11,9 @@ test green. So these packs ship the service and the requirements, and you bring 
 tests.
 
 - `round-1/` — a focused service: one stateful domain object with a clear lifecycle and a
-  few planted bugs. Target ~35 minutes. Where a pack has a full product spec, it is in
-  `README.md`; a `CANDIDATE_BRIEF.md` frames the joining-late task, and
-  `PROJECT_MANAGER_NOTES.md` has the questions to ask.
+  few planted bugs. Target ~35 minutes. The product spec is in `README.md`; a
+  `CANDIDATE_BRIEF.md` frames the joining-late task, and `PROJECT_MANAGER_NOTES.md` has
+  the questions to ask.
 - `round-2/` — a larger multi-module microservice with more surface area and a `tickets/`
   backlog of reported problems. Target ~45 minutes.
 
@@ -97,7 +97,7 @@ Treat any AI assistant the way the round expects: use it to understand the code 
 
 ## Running a mock interview
 
-`zephyr` and `quasar` include an `INTERVIEWER_GUIDE.md` with the answer key, suggested
+Every round-1 pack includes an `INTERVIEWER_GUIDE.md` with the answer key, suggested
 flow, recommended answers to the clarifying questions, and a hint ladder. It is
 interviewer-only: do not give it to the candidate or leave it open on a shared screen.
 

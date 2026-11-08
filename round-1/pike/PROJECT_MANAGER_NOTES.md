@@ -1,10 +1,8 @@
 # Project Manager Notes - Document Approval Workflow
 
-Do not read this until after your first pass.
-
-These are the questions a strong candidate asks before and during the fix. The
-interviewer is playing the project manager, so some answers are judgement calls,
-not facts in the code.
+Read this after your first pass. It is a checklist of the questions a strong
+candidate asks before and during the fix. The interviewer is playing the
+project manager, so some answers are judgement calls, not facts in the code.
 
 - What should approving a rejected document do?
 - Can a document be withdrawn after it is decided?

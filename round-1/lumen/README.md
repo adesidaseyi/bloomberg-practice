@@ -1,30 +1,42 @@
 # lumen - Job State Machine
 
-`JobQueue` is a job state machine.
+`JobQueue` is a job state machine. A job is `QUEUED`, then `RUNNING` once started. From `RUNNING` it either completes (`DONE`) or fails. A failure retries back to `QUEUED` until the attempt budget is spent, then the job is `FAILED`. The service is in-memory and single-process.
 
-You are joining this codebase late, and something in it is wrong. Users report jobs that start twice, jobs completed while not running, and jobs that retry one time too many. Your job is
-to find the bug or bugs behind that, fix them, and prove each fix with a test you
-write yourself. This pack ships no tests.
+## Domain model
 
-## Scope
+- `Job` has `job_id`, `payload`, `status`, and `attempts`.
+- Status: `QUEUED`, `RUNNING`, `DONE`, `FAILED`.
+- `max_attempts` is the total number of starts allowed.
 
-In scope:
+## Lifecycle
 
-- find and fix the defects behind the reported symptom;
-- write your own tests to confirm each defect and each fix;
-- keep all existing, correct behaviour working.
+| From | Event | To |
+| --- | --- | --- |
+| `QUEUED` | start | `RUNNING` |
+| `RUNNING` | complete | `DONE` |
+| `RUNNING` | fail, attempts < max | `QUEUED` |
+| `RUNNING` | fail, attempts >= max | `FAILED` |
 
-Out of scope:
+Nothing leaves `DONE` or `FAILED`.
 
-- redesigning the component or changing its public API;
-- adding features the brief did not ask for;
-- performance work, unless a defect is itself a performance bug.
+## Public API
 
-Time budget: about 35 minutes.
+### `enqueue(payload) -> Job`
 
-## Start here
+Creates a `QUEUED` job with zero attempts.
 
-1. `CANDIDATE_BRIEF.md`: the system, the lifecycle, and what to be ready to explain.
-2. `PROJECT_MANAGER_NOTES.md`: questions to ask before you change behaviour.
-3. `SETUP.md`: how to run the tests you write, in Python, C++, or Java.
-4. `SELF_REVIEW_AFTER.md`: read only after you finish.
+### `start(job_id) -> Job`
+
+Starts a queued job and increments its attempt count.
+
+### `complete(job_id) -> Job`
+
+Marks a running job `DONE`.
+
+### `fail(job_id) -> Job`
+
+Retries a running job while budget remains, otherwise marks it `FAILED`.
+
+### `status(job_id) -> JobStatus`
+
+Returns the job's status.

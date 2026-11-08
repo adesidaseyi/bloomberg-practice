@@ -19,7 +19,6 @@ public:
     }
     Job& fail(const std::string& id){
         Job& j=get(id);
-        if(j.status!=JobStatus::RUNNING) throw std::invalid_argument("only running jobs can fail");
         if(j.attempts<=max_) j.status=JobStatus::QUEUED; else j.status=JobStatus::FAILED;
         return j;
     }

@@ -5,7 +5,7 @@ public class Approvals {
     private final Map<String,Document> docs=new LinkedHashMap<>(); private int seq=0;
     public Document submit(String title){ String id="D"+(++seq); Document d=new Document(id,title); docs.put(id,d); return d; }
     public Document approve(String id){ Document d=get(id);  d.status=DocStatus.APPROVED; return d; }
-    public Document reject(String id){ Document d=get(id); if(d.status!=DocStatus.PENDING) throw new IllegalArgumentException("only pending"); d.status=DocStatus.REJECTED; return d; }
+    public Document reject(String id){ Document d=get(id);  d.status=DocStatus.REJECTED; return d; }
     public Document withdraw(String id){ Document d=get(id);  d.status=DocStatus.WITHDRAWN; return d; }
     public DocStatus status(String id){ return get(id).status; }
     public int pendingCount(){  return docs.size(); }

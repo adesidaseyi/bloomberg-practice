@@ -1,30 +1,41 @@
 # marlin - Inventory Reservations
 
-`InventoryService` reserves stock for a fulfilment system.
+`InventoryService` reserves stock for a fulfilment system. Units are reserved with a TTL hold, then either committed (shipped) or released back to available stock. Expired holds return their units automatically. The service is in-memory, single-process, and clock-injected.
 
-You are joining this codebase late, and something in it is wrong. Users report stock counts that drift, holds that ship after they should have expired, and releases that free the same units twice. Your job is
-to find the bug or bugs behind that, fix them, and prove each fix with a test you
-write yourself. This pack ships no tests.
+## Domain model
 
-## Scope
+- `Reservation` has `reservation_id`, `sku`, `qty`, `status`, and `expires_at`.
+- Status: `HELD`, `COMMITTED`, `RELEASED`.
+- Each SKU has a fixed capacity and an available count. A `HELD` reservation has already reduced available stock.
 
-In scope:
+## Lifecycle
 
-- find and fix the defects behind the reported symptom;
-- write your own tests to confirm each defect and each fix;
-- keep all existing, correct behaviour working.
+| From | Event | To |
+| --- | --- | --- |
+| `HELD` | commit | `COMMITTED` |
+| `HELD` | release | `RELEASED` |
+| `HELD` | TTL reached | `RELEASED` |
 
-Out of scope:
+Nothing leaves `COMMITTED` or `RELEASED`.
 
-- redesigning the component or changing its public API;
-- adding features the brief did not ask for;
-- performance work, unless a defect is itself a performance bug.
+## Public API
 
-Time budget: about 35 minutes.
+### `available(sku) -> int`
 
-## Start here
+Applies due expiry, then returns the units currently available.
 
-1. `CANDIDATE_BRIEF.md`: the system, the lifecycle, and what to be ready to explain.
-2. `PROJECT_MANAGER_NOTES.md`: questions to ask before you change behaviour.
-3. `SETUP.md`: how to run the tests you write, in Python, C++, or Java.
-4. `SELF_REVIEW_AFTER.md`: read only after you finish.
+### `reserve(sku, qty) -> Reservation`
+
+Applies expiry, validates stock, creates a `HELD` reservation with a TTL, and reduces available.
+
+### `commit(reservation_id) -> Reservation`
+
+Ships a held reservation; it stops being reserved.
+
+### `release(reservation_id) -> Reservation`
+
+Returns a held reservation's units to available stock.
+
+### `reserved_units(sku) -> int`
+
+Reports how many units are currently held for the SKU.

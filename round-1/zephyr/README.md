@@ -71,6 +71,14 @@ python/conftest.py        import path for your Python tests
 
 The same behaviour is implemented in all three languages. Pick one.
 
+## Pack files
+
+- `README.md` - this specification
+- `CANDIDATE_BRIEF.md` - the joining-late task and be-ready-to-explain list
+- `PROJECT_MANAGER_NOTES.md` - questions to ask the interviewer
+- `SETUP.md` - how to run the tests you write
+- `SELF_REVIEW_AFTER.md` - read after the exercise
+
 ## Scope and time
 
 In scope: find where the implementation deviates from this specification, write

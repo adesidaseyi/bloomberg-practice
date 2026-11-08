@@ -1,30 +1,37 @@
 # onyx - Access Token Store
 
-`TokenStore` issues short-lived access tokens.
+`TokenStore` issues short-lived access tokens. A token is valid while it is `ACTIVE` and unexpired. It can be refreshed to extend its life, or revoked. The service is in-memory, single-process, and clock-injected.
 
-You are joining this codebase late, and something in it is wrong. Users report expired tokens that still pass validation, expired tokens that can be refreshed back to life, and revokes that run twice. Your job is
-to find the bug or bugs behind that, fix them, and prove each fix with a test you
-write yourself. This pack ships no tests.
+## Domain model
 
-## Scope
+- `Token` has `token_id`, `user_id`, `status`, and `expires_at`.
+- Status: `ACTIVE`, `REVOKED`.
+- An expired token still has `ACTIVE` status in this model, but it is invalid. Expiry is evaluated against the clock.
 
-In scope:
+## Lifecycle
 
-- find and fix the defects behind the reported symptom;
-- write your own tests to confirm each defect and each fix;
-- keep all existing, correct behaviour working.
+| From | Event | To |
+| --- | --- | --- |
+| `ACTIVE` | refresh, unexpired | `ACTIVE` with a new expiry |
+| `ACTIVE` | revoke, unexpired | `REVOKED` |
+| `ACTIVE` | TTL reached | expired (stored `ACTIVE`, invalid) |
 
-Out of scope:
+Nothing leaves `REVOKED`.
 
-- redesigning the component or changing its public API;
-- adding features the brief did not ask for;
-- performance work, unless a defect is itself a performance bug.
+## Public API
 
-Time budget: about 35 minutes.
+### `issue(user_id) -> Token`
 
-## Start here
+Creates an `ACTIVE` token with `expires_at = now + ttl`.
 
-1. `CANDIDATE_BRIEF.md`: the system, the lifecycle, and what to be ready to explain.
-2. `PROJECT_MANAGER_NOTES.md`: questions to ask before you change behaviour.
-3. `SETUP.md`: how to run the tests you write, in Python, C++, or Java.
-4. `SELF_REVIEW_AFTER.md`: read only after you finish.
+### `validate(token_id) -> bool`
+
+Reports whether the token exists, is `ACTIVE`, and is unexpired.
+
+### `refresh(token_id) -> Token`
+
+Extends an active, unexpired token from the current time.
+
+### `revoke(token_id) -> Token`
+
+Revokes an active, unexpired token.

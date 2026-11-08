@@ -26,6 +26,7 @@ class LRUCache:
     def put(self, key: str, value: Any) -> None:
         if key in self._data:
             self._data.move_to_end(key)
+            return
         self._data[key] = _Entry(value, self._clock() + self._ttl)
         self._data.move_to_end(key)
         while len(self._data) > self._cap:

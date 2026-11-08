@@ -1,30 +1,41 @@
 # halcyon - Order Lifecycle
 
-`OrderService` tracks working orders for a trading desk.
+`OrderService` tracks working orders for a trading desk. An order is placed with a symbol, side, and quantity, then filled in one or more executions or cancelled while it still has open quantity. The service is in-memory and single-process.
 
-You are joining this codebase late, and something in it is wrong. Users report orders that over-fill, cancelled orders that still show open quantity, and cancels that go through twice. Your job is
-to find the bug or bugs behind that, fix them, and prove each fix with a test you
-write yourself. This pack ships no tests.
+## Domain model
 
-## Scope
+- `Order` has `order_id`, `symbol`, `side` (`buy` or `sell`), `qty`, `filled`, and `status`.
+- Status: `OPEN`, `PARTIAL`, `FILLED`, `CANCELLED`.
+- `OPEN` and `PARTIAL` are working states. `FILLED` and `CANCELLED` are terminal.
 
-In scope:
+## Lifecycle
 
-- find and fix the defects behind the reported symptom;
-- write your own tests to confirm each defect and each fix;
-- keep all existing, correct behaviour working.
+| From | Event | To |
+| --- | --- | --- |
+| `OPEN` | fill less than remaining | `PARTIAL` |
+| `OPEN` or `PARTIAL` | fill exactly remaining | `FILLED` |
+| `OPEN` or `PARTIAL` | cancel | `CANCELLED` |
 
-Out of scope:
+Nothing leaves `FILLED` or `CANCELLED`.
 
-- redesigning the component or changing its public API;
-- adding features the brief did not ask for;
-- performance work, unless a defect is itself a performance bug.
+## Public API
 
-Time budget: about 35 minutes.
+### `place(symbol, side, qty) -> Order`
 
-## Start here
+Validates side and quantity, then creates an `OPEN` order with `filled = 0`.
 
-1. `CANDIDATE_BRIEF.md`: the system, the lifecycle, and what to be ready to explain.
-2. `PROJECT_MANAGER_NOTES.md`: questions to ask before you change behaviour.
-3. `SETUP.md`: how to run the tests you write, in Python, C++, or Java.
-4. `SELF_REVIEW_AFTER.md`: read only after you finish.
+### `fill(order_id, qty) -> Order`
+
+Applies a positive execution to a working order and updates `PARTIAL`/`FILLED`.
+
+### `cancel(order_id) -> Order`
+
+Cancels a working order.
+
+### `remaining(order_id) -> int`
+
+Returns the unfilled quantity for a working order, or zero once terminal.
+
+### `open_qty_for(symbol) -> int`
+
+Sums the remaining quantity across working orders for a symbol.

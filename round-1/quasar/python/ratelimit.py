@@ -40,3 +40,4 @@ class RateLimiter:
 
     def reset(self, key: str) -> None:
         pass
+

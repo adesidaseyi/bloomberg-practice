@@ -1,30 +1,44 @@
 # cobalt - Wallet Authorization Holds
 
-`WalletService` is a wallet with authorization holds.
+`WalletService` is a wallet with authorization holds. Funds are authorized (reserved), then either captured (settled out of the balance) or voided (released). All amounts are integer cents. The service is in-memory and single-process.
 
-You are joining this codebase late, and something in it is wrong. Users report wallets that let you spend reserved money, voids that run twice, and captures that fire after a void. Your job is
-to find the bug or bugs behind that, fix them, and prove each fix with a test you
-write yourself. This pack ships no tests.
+## Domain model
 
-## Scope
+- `Hold` has `hold_id`, `account_id`, `amount`, and `status`.
+- Status: `HELD`, `CAPTURED`, `VOIDED`.
+- An account has a raw balance and an available amount. Available is the balance minus active holds.
 
-In scope:
+## Lifecycle
 
-- find and fix the defects behind the reported symptom;
-- write your own tests to confirm each defect and each fix;
-- keep all existing, correct behaviour working.
+| From | Event | To |
+| --- | --- | --- |
+| `HELD` | capture | `CAPTURED` |
+| `HELD` | void | `VOIDED` |
 
-Out of scope:
+Nothing leaves `CAPTURED` or `VOIDED`.
 
-- redesigning the component or changing its public API;
-- adding features the brief did not ask for;
-- performance work, unless a defect is itself a performance bug.
+## Public API
 
-Time budget: about 35 minutes.
+### `open_account(account_id, cents) -> None`
 
-## Start here
+Creates an account with a non-negative integer-cent balance.
 
-1. `CANDIDATE_BRIEF.md`: the system, the lifecycle, and what to be ready to explain.
-2. `PROJECT_MANAGER_NOTES.md`: questions to ask before you change behaviour.
-3. `SETUP.md`: how to run the tests you write, in Python, C++, or Java.
-4. `SELF_REVIEW_AFTER.md`: read only after you finish.
+### `balance(account_id) -> int`
+
+Returns the raw balance.
+
+### `available(account_id) -> int`
+
+Returns the balance minus the sum of active `HELD` amounts.
+
+### `authorize(account_id, cents) -> Hold`
+
+Reserves funds if the amount is positive and no more than available.
+
+### `capture(hold_id) -> Hold`
+
+Settles a held authorization exactly once, reducing the balance.
+
+### `void(hold_id) -> Hold`
+
+Releases a held authorization without touching the balance.

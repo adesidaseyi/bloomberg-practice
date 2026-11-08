@@ -40,8 +40,6 @@ class ApprovalService:
 
     def reject(self, doc_id: str) -> Document:
         doc = self._get(doc_id)
-        if doc.status != DocStatus.PENDING:
-            raise ValueError("only pending documents can be rejected")
         doc.status = DocStatus.REJECTED
         return doc
 

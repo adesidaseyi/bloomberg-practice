@@ -1,30 +1,31 @@
 # tundra - LRU Cache with TTL
 
-`LRUCache` is a capacity-bounded cache with per-entry TTL and least-recently-used eviction.
+`LRUCache` is a capacity-bounded cache with per-entry TTL and least-recently-used eviction. A read counts as a use, expired entries are not returned, and expired entries do not count toward size. The service is in-memory, single-process, and clock-injected.
 
-You are joining this codebase late, and something in it is wrong. Users report stale values served after expiry, the wrong key evicted under load, and a size that counts dead entries. Your job is
-to find the bug or bugs behind that, fix them, and prove each fix with a test you
-write yourself. This pack ships no tests.
+## Domain model
 
-## Scope
+- Each entry has a value and an `expires_at` instant.
+- The cache has a fixed capacity and a per-entry TTL.
+- The least-recently-used end is evicted first; a successful read makes an entry most-recently-used.
 
-In scope:
+## Lifecycle
 
-- find and fix the defects behind the reported symptom;
-- write your own tests to confirm each defect and each fix;
-- keep all existing, correct behaviour working.
+```text
+put -> live entry (expires at now + ttl)
+get -> value if live, and the entry becomes most-recently-used
+over capacity -> evict the least-recently-used live entry
+```
 
-Out of scope:
+## Public API
 
-- redesigning the component or changing its public API;
-- adding features the brief did not ask for;
-- performance work, unless a defect is itself a performance bug.
+### `put(key, value) -> None`
 
-Time budget: about 35 minutes.
+Inserts or updates an entry, resets its expiry, and marks it most-recently-used.
 
-## Start here
+### `get(key) -> value or None`
 
-1. `CANDIDATE_BRIEF.md`: the system, the lifecycle, and what to be ready to explain.
-2. `PROJECT_MANAGER_NOTES.md`: questions to ask before you change behaviour.
-3. `SETUP.md`: how to run the tests you write, in Python, C++, or Java.
-4. `SELF_REVIEW_AFTER.md`: read only after you finish.
+Returns a live value; a live read marks the entry most-recently-used. Expired keys return `None`.
+
+### `size() -> int`
+
+Counts live entries only.
