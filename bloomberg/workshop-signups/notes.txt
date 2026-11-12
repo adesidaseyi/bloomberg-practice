@@ -1,0 +1,35 @@
+requirement - expected behaviour::
+- no duplicate signups (bad network or intentional) for same attendee same workshop
+- workshop roster only has one active entry per attendee - inactive entry on cancelation
+- the same attendee can make signup request again to same workshop if prev entry is inactive
+
+
+to map out in the current implementation:
+- available apis for signup
+- request lifecycle of these apis
+- modules, database models etc. that are interacted with in this request flow
+
+
+test/verify the issue:
+- 
+
+take note of side-effects and backward compatibility with fixes
+
+
+
+signup request flow:
+signups.py to handle active signups -> if we need to waitlist: waitlist_service
+stateful: schema, Signup model
+
+
+suspecting:
+- rooster filters (duplicates active rows could still appear)
+- schema uniqueness constraint? (due to stored signup status). redundancy
+- consequence: concurrent requests can both pass the active-signup check before inserting.
+
+
+tests for invariant
+- invariant: existence of a worksop id before attendee can Signup; 
+- invariant: capacity still available -> active signup entry otherwise waitlist
+- invariant *: checks for existing active signup 
+

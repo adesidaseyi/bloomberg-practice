@@ -57,6 +57,8 @@ the requirements; you find and confirm the deviations.
 | [vesper](round-1/vesper) | Connection Pool | Fixed-capacity acquire, release, and close, with a capacity invariant. |
 | [tundra](round-1/tundra) | LRU + TTL Cache | Capacity-bounded cache with per-entry TTL and least-recently-used eviction. |
 | [lumen](round-1/lumen) | Job State Machine | Queued, running, done, failed, with retries and an attempt budget. |
+| [ember](round-1/ember) | Circuit Breaker | Closed, open, and half-open gate with consecutive failures, cooldown, and a single probe. |
+| [lattice](round-1/lattice) | Limit Order Book | Price-time priority matching, resting depth, partial fills, and cancel. |
 
 ## Round 2 — larger microservices (~45 min, Python / C++ / Java)
 

@@ -18,24 +18,3 @@
 
 Nothing leaves `COMMITTED` or `RELEASED`.
 
-## Public API
-
-### `available(sku) -> int`
-
-Applies due expiry, then returns the units currently available.
-
-### `reserve(sku, qty) -> Reservation`
-
-Applies expiry, validates stock, creates a `HELD` reservation with a TTL, and reduces available.
-
-### `commit(reservation_id) -> Reservation`
-
-Ships a held reservation; it stops being reserved.
-
-### `release(reservation_id) -> Reservation`
-
-Returns a held reservation's units to available stock.
-
-### `reserved_units(sku) -> int`
-
-Reports how many units are currently held for the SKU.
