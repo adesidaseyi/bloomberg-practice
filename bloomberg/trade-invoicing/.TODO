@@ -1,0 +1,10 @@
+notes on requirements: 
+- business day trades - trades in a location stick to the tz for that location
+- round half up on calculated fee
+- currency calc: use rate conversion at invoice time for each line
+- each line in invoce is added to get total
+- no duplicate invoice in a listing (pages of invoice)
+- we expect reconciliation efforts
+- export invoices to JSON
+
+- other services like billing and recon depend on invoicing (watch out for side effects)
