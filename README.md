@@ -59,6 +59,8 @@ the requirements; you find and confirm the deviations.
 | [lumen](round-1/lumen) | Job State Machine | Queued, running, done, failed, with retries and an attempt budget. |
 | [ember](round-1/ember) | Circuit Breaker | Closed, open, and half-open gate with consecutive failures, cooldown, and a single probe. |
 | [lattice](round-1/lattice) | Limit Order Book | Price-time priority matching, resting depth, partial fills, and cancel. |
+| [quill](round-1/quill) | Timed Auction | Reserve auction with a closing instant, leading bid, and winner. |
+| [juniper](round-1/juniper) | Trade Settlement | T+N settlement, pending notional, and terminal trade states. |
 
 ## Round 2 — larger microservices (~45 min, Python / C++ / Java)
 
